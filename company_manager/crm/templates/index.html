@@ -5,7 +5,7 @@
 
 <script>
 $(document).ready(function(){
-    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx = document.getElementById('graf').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -13,6 +13,17 @@ $(document).ready(function(){
             datasets: [{
                 label: 'Opportunity value',
                 data: [{%for row in qs%}{{row.opportunity_value}},{%endfor%}]
+            }]
+        }
+    });
+    var ctx2 = document.getElementById('graf2').getContext('2d');
+    var myChart2 = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: [{%for row in qs2 %}'{{row.status }}',{%endfor%}],
+            datasets: [{
+                label: 'Opportunity value',
+                data: [{%for row in qs2 %}{{row.value}},{%endfor%}]
             }]
         }
     });
@@ -45,7 +56,8 @@ $(document).ready(function(){
             </select>
             <input type="submit" value="Go">
         </form>
-        <canvas id="myChart" width="100%"></canvas>
+        <canvas id="graf" width="100%"></canvas>
+        <canvas id="graf2" width="100%"></canvas>
     </div>
 </div>
 

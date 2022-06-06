@@ -26,6 +26,9 @@ class IndexView(TemplateView):
         # context["qs"] = models.Opportunity.objects.filter(value__isnull=False)
         context["qs"] = User.objects.annotate(opportunity_value=Sum('opportunity__value'))\
             .filter(opportunity_value__isnull=False)
+        context["qs2"] =  models.Opportunity.objects.values("status")\
+            .annotate(value=Sum('value')) \
+            .filter(value__isnull=False)
         return context
 
 class CompanyCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
