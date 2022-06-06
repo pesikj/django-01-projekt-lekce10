@@ -5,4 +5,24 @@
 <h1>Opportunities</h1>
 {% crispy filter.form %}
 {% render_table table %}
+
+<canvas id="graf" width="400" height="100"></canvas>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function(){
+    var ctx = document.getElementById('graf').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{%for row in qs%}'{{row}}',{%endfor%}],
+            datasets: [{
+                label: 'Opportunity value',
+                data: [{%for row in qs%}{{row.value}},{%endfor%}]
+            }]
+        }
+    });
+});
+</script>
 {% endblock %}

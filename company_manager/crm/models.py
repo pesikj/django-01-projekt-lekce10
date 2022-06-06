@@ -80,15 +80,15 @@ class Employee(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created:
+    if created and kwargs.get('raw', False):
         Employee.objects.create(user=instance)
 
-@receiver(post_save, sender=Opportunity)
-def create_opportunity(sender, instance, created, **kwargs):
-    if created:
-        send_mail(
-            'Byla vytvořena nová opportunita',
-            f'Byla vytvořena opportunita pro zákazníka {instance.company.name}',
-            'robot@mojefirma.cz',
-            ["sales_manager@czechitas.cz"]
-        )
+# @receiver(post_save, sender=Opportunity)
+# def create_opportunity(sender, instance, created, **kwargs):
+#     if created:
+#         send_mail(
+#             'Byla vytvořena nová opportunita',
+#             f'Byla vytvořena opportunita pro zákazníka {instance.company.name}',
+#             'robot@mojefirma.cz',
+#             ["sales_manager@czechitas.cz"]
+#         )

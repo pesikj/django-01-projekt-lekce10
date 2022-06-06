@@ -1,5 +1,25 @@
 {% extends "base.html" %}
 {% load i18n %}
+
+{% block scripts %}
+
+<script>
+$(document).ready(function(){
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{%for row in qs%}'{{row}}',{%endfor%}],
+            datasets: [{
+                label: 'Opportunity value',
+                data: [{%for row in qs%}{{row.opportunity_value}},{%endfor%}]
+            }]
+        }
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="jumbotron text-center">
   <h1>Welcome in Company Manager</h1>
@@ -25,7 +45,21 @@
             </select>
             <input type="submit" value="Go">
         </form>
+        <canvas id="myChart" width="100%"></canvas>
     </div>
 </div>
+
+{% load tz %}
+{% get_current_timezone as TIME_ZONE %}
+<form action="{% url 'set_timezone' %}" method="POST">
+    {% csrf_token %}
+    <label for="timezone">Time zone:</label>
+    <select name="timezone">
+        {% for city, tz in timezones %}
+        <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ city }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Set">
+</form>
 
 {% endblock %}

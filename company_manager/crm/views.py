@@ -15,9 +15,18 @@ from django_tables2 import SingleTableMixin
 import crm.tables as tables
 from django_filters.views import FilterView
 from crm.filters import OpportunityFilter, OpportunityFilterFormHelper
+from django.contrib.auth.models import User
+from django.db.models import Sum
 
 class IndexView(TemplateView):
     template_name = "index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context["qs"] = models.Opportunity.objects.filter(value__isnull=False)
+        context["qs"] = User.objects.annotate(opportunity_value=Sum('opportunity__value'))\
+            .filter(opportunity_value__isnull=False)
+        return context
 
 class CompanyCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = "company/create_company.html"
@@ -79,3 +88,10 @@ class OpportunityListView(LoginRequiredMixin, SingleTableMixin, FilterView):
         filterset = super().get_filterset(filterset_class)
         filterset.form.helper = OpportunityFilterFormHelper()
         return filterset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["qs"] = self.object_list.filter(value__isnull=False)
+        # context["qs"] = self.object_list.filter(value__isnull=False)\
+        #     .values("company__name").annotate(value=Sum("value"))
+        return context
